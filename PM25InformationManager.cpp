@@ -253,6 +253,11 @@ bool ListDelete(SortList *&L,int i)
 	return true;
 }
 
+bool FuzzySearch(SortList *sortList)
+{
+	return true;
+}
+
 int MainUser(SortList *sortList)
 {
 	int isChoose,isExit=1;

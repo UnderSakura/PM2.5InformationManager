@@ -253,8 +253,25 @@ bool ListDelete(SortList *&L,int i)
 	return true;
 }
 
+int SeqSearch(SortList *sortList,char InputChar[])
+{
+	CityInfo cityInfo;
+	int i=0;
+	sortList->Info[sortList->Length].CityName=cityInfo.CityName;
+	while(sortList->Info[i].CityName!=cityInfo.CityName)
+		i++;
+	if(i==sortList->Length)
+		return 0;
+	else
+		return i+1;
+}
+
 bool FuzzySearch(SortList *sortList)
 {
+	char tmpInputChar[MaxCharNum];
+	printf("请输入查找词：");
+	scanf("%s",&tmpInputChar);
+	//
 	return true;
 }
 

@@ -94,6 +94,19 @@ int CreateSortList(SortList *&sortList)
 		scanf("%s",&cityInfo.CityName);
 		printf("请输入城市AQI值: \n");
 		scanf("%d",&cityInfo.AQIValue);
+		/*if(cityInfo.AQIValue)//0-500   有错误
+		{
+			if(cityInfo.AQIValue>=0&&cityInfo.AQIValue<=100)//0-100
+				cityInfo.AirCondi="良/优   ";
+			elseif(cityInfo.AQIValue>=101&&cityInfo.AQIValue<=150)//101-150
+				cityInfo.AirCondi="轻度污染";
+			elseif(cityInfo.AQIValue>=151&&cityInfo.AQIValue<=200)//151-200
+				cityInfo.AirCondi="中度污染";
+			elseif(cityInfo.AQIValue>=201&&cityInfo.AQIValue<=300)//201-300
+				cityInfo.AirCondi="重度污染";
+			else//300+
+				cityInfo.AirCondi="严重污染";
+		}*/
 		printf("请输入城市空气状况: \n");
 		scanf("%s",&cityInfo.AirCondi);
 		printf("请输入城市PM2.5值: \n");
@@ -112,10 +125,11 @@ int CreateSortList(SortList *&sortList)
 bool CityDataAlter(SortList *&sortList)
 {
 	char currentCityName[MaxCharNum];
-	printf("请输入要修改的城市名称：\n");
+	printf("请输入要修改的城市名称:\n");
 	scanf("%s",&currentCityName);
 	for(int i=0;i<sortList->Length;i++)
 	{
+		//printf("Debug");
 		if(!strcmp(currentCityName,sortList->Info[i].CityName))
 		{
 			printf("请输入城市AQI值: \n");
@@ -136,10 +150,11 @@ bool CityDataAlter(SortList *&sortList)
 bool LocateCityData(SortList *sortList)
 {
 	char currentCityName[MaxCharNum];
-	printf("请输入要查找的城市名称：\n");
+	printf("请输入要查找的城市名称:\n");
 	scanf("%s",&currentCityName);
 	for(int i=0;i<sortList->Length;i++)
 	{
+		//printf("Debug");
 		if(!strcmp(currentCityName,sortList->Info[i].CityName))
 		{
 			printf("城市AQI值: ");
@@ -245,6 +260,7 @@ bool ListDelete(SortList *&L,int i)
 	if(i<1||i>L->Length)
 		return false;
 	i--;
+	//e=L->data[i];
 	for(j=i;j<L->Length-1;j++)
 	{
 		L->Info[j]=L->Info[j+1];
@@ -253,19 +269,33 @@ bool ListDelete(SortList *&L,int i)
 	return true;
 }
 
-int SeqSearch(SortList *sortList,char InputChar[])
+int SeqSearch(SortList *sortList)
 {
-	CityInfo cityInfo;
-	int i=0;
-	sortList->Info[sortList->Length].CityName=cityInfo.CityName;
-	while(sortList->Info[i].CityName!=cityInfo.CityName)
-		i++;
-	if(i==sortList->Length)
-		return 0;
-	else
-		return i+1;
+	printf("请输入模糊查找词:");
+	char InputChar;
+	scanf("%s",&InputChar);
+	for(int i=0;i<sortList->Length;i++)
+	{
+		for(int j=0;j<MaxCharNum;j++)
+		{
+			if(sortList->Info[i].CityName[j]==InputChar)
+			{
+				printf("您可能想查找的是以下:\n");
+				printf("城市编号\t  城市名字\t  \tAQI值   空气状况   PM2.5值   PM10值   CO值\n");
+				printf("%d\t",sortList->Info[i].CityNum);
+				printf("\t%s\t\t",sortList->Info[i].CityName);
+				printf("\t%d\t",sortList->Info[i].AQIValue);
+				printf("  %s\t",sortList->Info[i].AirCondi);
+				printf("\t%d\t",sortList->Info[i].PM2Value);
+				printf("%d\t",sortList->Info[i].PM10Value);
+				printf("%d\n",sortList->Info[i].COValue);
+				break;
+			}
+		}
+	}
+	return 1;
 }
-
+/*
 bool FuzzySearch(SortList *sortList)
 {
 	char tmpInputChar[MaxCharNum];
@@ -274,20 +304,22 @@ bool FuzzySearch(SortList *sortList)
 	//
 	return true;
 }
-
+*/
 int MainUser(SortList *sortList)
 {
 	int isChoose,isExit=1;
 	do
 	{
 		printf("-----------PM2.5管理员系统---------------\n");
+		printf("//       Design by UnderSakura          //\n");
 		printf("//        1.城市空气指数表               //\n");
 		printf("//        2.选择城市显示空气指数         //\n");
 		printf("//        3.城市AQI降序                 //\n");
 		printf("//        4.城市AQI升序                 //\n");
+		printf("//        5.城市模糊查找                //\n");
 		printf("//        0.退出管理系统                //\n");
 		printf("----------------------------------------\n");
-		printf("请输入您的选择：");
+		printf("请输入您的选择: ");
 		scanf("%d",&isChoose);
 		switch(isChoose)
 		{
@@ -299,9 +331,14 @@ int MainUser(SortList *sortList)
 				break;
 			case 3:
 				AQIRankDown(sortList);
+				printf("请输入'1'来显示排序后结果\n");
 				break;
 			case 4:
 				AQIRankUp(sortList);
+				printf("请输入'1'来显示排序后结果\n");
+				break;
+			case 5:
+				SeqSearch(sortList);
 				break;
 			case 0:
 				isExit=0;
@@ -324,7 +361,7 @@ int MainAdminManager(SortList *&sortList)
 		printf("//         2.城市空气指数修改            //\n");
 		printf("//         0.退出管理系统                //\n");
 		printf("-----------------------------------------\n");
-		printf("请输入您的选择：");
+		printf("请输入您的选择:");
 		scanf("%d",&isChoose);
 		switch(isChoose)
 		{
@@ -360,16 +397,16 @@ int main()//主函数
 		printf("\\         2.管理员入口               \\\n");
 		printf("\\         0.退出系统                 \\\n");
 		printf("-----------------------------------------\n");
-		printf("请输入您的选择：");
+		printf("请输入您的选择:");
 		scanf("%d",&isChoose);
 		switch(isChoose)
 		{
 			case 1:
-				printf("欢迎!");
+				printf("欢迎!Welcome To PM2.5InformationManageSystem!\n");
 				MainUser(sortList);
 				break;
 			case 2:
-				printf("已进入管理员入口!\n");
+				printf("已进入管理员入口!  欢迎!  尊敬的管理员UnderSakura様!\n");
 				AdminAuthen();
 				MainAdminManager(sortList);
 				break;
